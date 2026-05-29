@@ -12,17 +12,21 @@
             --bg: #0b0f19;
             --card: #161e2e;
         }
-
+        * {
+            user-select: none;
+        }
         body {
             background-color: var(--bg);
             color: white;
             font-family: 'Cairo', sans-serif;
             margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
+            position: relative;
         }
-
         header {
             width: 100%;
             background: linear-gradient(135deg, #00d2ff, #3a7bd5);
@@ -30,8 +34,14 @@
             text-align: center;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-
-        /* ستايل البنرات */
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 1rem;
+        }
         .banner-top, .banner-bottom {
             width: 100%;
             text-align: center;
@@ -54,15 +64,16 @@
             margin-top: 30px;
             margin-bottom: 20px;
         }
-
         .main-container {
             max-width: 900px;
             width: 95%;
-            margin: 20px auto;
+            margin: 0 auto;
             text-align: center;
         }
-
-        /* منطقة مشغل الفيديو */
+        .video-wrapper-outer {
+            position: relative;
+            z-index: 1;
+        }
         .video-display-area {
             background: #000;
             border-radius: 20px;
@@ -70,26 +81,27 @@
             border: 3px solid var(--primary);
             box-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
             margin-bottom: 30px;
-            display: none; /* يظهر عند النقر فقط */
+            display: none;
             position: relative;
         }
-
         .responsive-iframe {
             position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            overflow: hidden;
         }
-
+        /* تم مضاعفة النسبة مرة ثالثة */
         .responsive-iframe iframe {
             position: absolute;
-            top: 0;
+            top: -160px;  /* كانت -80px والآن -160px */
             left: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% + 160px);  /* كانت +80px والآن +160px */
             border: 0;
+            overflow: hidden;
+            pointer-events: auto;
         }
-
-        /* شبكة أزرار الحلقات */
         .episodes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
@@ -99,7 +111,6 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-
         .ep-btn {
             background: #252f44;
             color: white;
@@ -111,30 +122,29 @@
             cursor: pointer;
             transition: 0.3s;
         }
-
         .ep-btn:hover {
             background: var(--primary);
             transform: scale(1.1);
             border-color: white;
         }
-
         .ep-btn.active {
             background: var(--accent);
             color: black;
             box-shadow: 0 0 15px var(--accent);
         }
-
         .info-text {
             margin-top: 20px;
             color: var(--primary);
             font-size: 1.1rem;
         }
-
         footer {
             margin-top: 50px;
             padding: 20px;
             opacity: 0.4;
             font-size: 0.8rem;
+        }
+        h2#status-msg {
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -145,7 +155,6 @@
     <p>اختر رقم الحلقة وابدأ المشاهدة فوراً</p>
 </header>
 
-<!-- ===== بنر أعلى الموقع ===== -->
 <div class="banner-top">
     <script>
         atOptions = {
@@ -161,22 +170,22 @@
 
 <div class="main-container">
     
-    <div id="videoPlayer" class="video-display-area">
-        <div class="responsive-iframe">
-            <iframe id="mainIframe" src="" allowfullscreen="" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+    <div class="video-wrapper-outer">
+        <div id="videoPlayer" class="video-display-area">
+            <div class="responsive-iframe">
+                <iframe id="mainIframe" src="" allowfullscreen scrolling="no"></iframe>
+            </div>
+            <div id="episodeTitle" style="padding: 10px; background: var(--card); font-weight: bold;"></div>
         </div>
-        <div id="episodeTitle" style="padding: 10px; background: var(--card); font-weight: bold;"></div>
     </div>
 
     <h2 id="status-msg">اضغط على رقم الحلقة للمشاهدة:</h2>
 
-    <div class="episodes-grid" id="buttonsGrid">
-        </div>
+    <div class="episodes-grid" id="buttonsGrid"></div>
 
     <p class="info-text">جميع الحلقات الـ 26 متوفرة الآن بجودة عالية</p>
 </div>
 
-<!-- ===== بنر أسفل الموقع ===== -->
 <div class="banner-bottom">
     <script>
         atOptions = {
@@ -193,66 +202,70 @@
 <footer>جميع الحقوق محفوظة - صدى الطفولة &copy; 2026</footer>
 
 <script>
-    // مصفوفة البيانات (تم تدقيق جميع الروابط)
-    const episodes = [
-        { n: 1, src: "https://meyon.com.ye/videos/embed/1cb15e94-c5ef-4766-95fb-1d736a545d2e" },
-        { n: 2, src: "https://meyon.com.ye/videos/embed/0fbbfac4-cb1d-49d8-8a27-dbfb8b3b526e" },
-        { n: 3, src: "https://meyon.com.ye/videos/embed/d0e8cad7-2aa0-4fe4-846b-2c5a950eaa00" },
-        { n: 4, src: "https://meyon.com.ye/videos/embed/5c68bda0-978c-4ad8-a77f-f4b401299eba" },
-        { n: 5, src: "https://meyon.com.ye/videos/embed/52490adb-e34c-4f79-a0b2-4054d892fc02" },
-        { n: 6, src: "https://meyon.com.ye/videos/embed/1e125bd3-e207-4a44-b99a-2e5bdaf8c56f" },
-        { n: 7, src: "https://meyon.com.ye/videos/embed/38293f0d-d0ee-4718-aef4-93a776b9315c" },
-        { n: 8, src: "https://meyon.com.ye/videos/embed/15cb5150-472c-4554-bbee-66d2dfe8fedf" },
-        { n: 9, src: "https://meyon.com.ye/videos/embed/f99a8569-9734-4274-a1c1-e79f89410346" },
-        { n: 10, src: "https://meyon.com.ye/videos/embed/8e2e9a66-e373-44a4-86af-2bae10eda3a5" },
-        { n: 11, src: "https://meyon.com.ye/videos/embed/2a2eea8f-0507-4935-ab52-6e5407ac0f56" },
-        { n: 12, src: "https://meyon.com.ye/videos/embed/9b3b878d-09a4-42ba-9bad-10ad858fa86d" },
-        { n: 13, src: "https://meyon.com.ye/videos/embed/804c60d6-20c5-485a-ab56-d6859b740c1e" },
-        { n: 14, src: "https://meyon.com.ye/videos/embed/526226c0-be2f-4574-90a8-a4d945671082" },
-        { n: 15, src: "https://meyon.com.ye/videos/embed/74391bf5-1fa1-4c91-8a0a-f05e62b06f81" },
-        { n: 16, src: "https://meyon.com.ye/videos/embed/770a59c5-a595-47d9-86ca-f71c171e080a" },
-        { n: 17, src: "https://meyon.com.ye/videos/embed/3c0cecf2-80ee-4ff3-a9f5-8e4748b8d702" },
-        { n: 18, src: "https://meyon.com.ye/videos/embed/2babf684-286b-40b4-bb78-8720f299bca0" },
-        { n: 19, src: "https://meyon.com.ye/videos/embed/d1b7b6ff-1ee6-4cac-86d5-29c28b559a37" },
-        { n: 20, src: "https://meyon.com.ye/videos/embed/aa0e3307-bf84-4ca6-8fe2-9c767dc61379" },
-        { n: 21, src: "https://meyon.com.ye/videos/embed/9b3b878d-09a4-42ba-9bad-10ad858fa86d" }, // رابط بديل للحلقة 21
-        { n: 22, src: "https://meyon.com.ye/videos/embed/91310d98-3c87-4e42-be78-8a9e35edeeff" },
-        { n: 23, src: "https://meyon.com.ye/videos/embed/c9443ea4-c5e4-46d3-923d-ea119cb2e68a" },
-        { n: 24, src: "https://meyon.com.ye/videos/embed/2f066685-d203-4655-9cc9-f735b648fb5d" },
-        { n: 25, src: "https://meyon.com.ye/videos/embed/508ed91d-098f-46d0-884e-6a0e4d9d7121" },
-        { n: 26, src: "https://meyon.com.ye/videos/embed/9b36a743-1c80-439d-a78c-be6559ea10ec" }
-    ];
+    const totalEpisodes = 26;
+    const episodeLinks = [];
+
+    for (let i = 0; i < totalEpisodes; i++) {
+        let episodeId = 441 + i;
+        episodeLinks.push(`https://cartoony.net/watch/56/${episodeId}`);
+    }
 
     const grid = document.getElementById('buttonsGrid');
     const player = document.getElementById('videoPlayer');
     const iframe = document.getElementById('mainIframe');
     const titleDisp = document.getElementById('episodeTitle');
+    
+    let scrollPosition = 0;
+    let bodyStylePosition = '';
+    let bodyStyleTop = '';
 
-    // إنشاء الأزرار تلقائياً
-    episodes.forEach(ep => {
+    function lockPage() {
+        scrollPosition = window.scrollY;
+        bodyStylePosition = document.body.style.position || '';
+        bodyStyleTop = document.body.style.top || '';
+        
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollPosition}px`;
+        document.body.style.width = '100%';
+    }
+
+    function unlockPage() {
+        document.body.style.position = bodyStylePosition;
+        document.body.style.top = bodyStyleTop;
+        document.body.style.width = '';
+        window.scrollTo(0, scrollPosition);
+    }
+
+    episodeLinks.forEach((link, index) => {
         const btn = document.createElement('button');
         btn.className = 'ep-btn';
-        btn.innerText = ep.n;
+        btn.innerText = index + 1;
         btn.onclick = function() {
-            // تم إزالة النافذة المنبثقة - فقط البنرات الثابتة تظهر
-            loadEpisode(ep.n, ep.src, btn);
+            lockPage();
+            
+            player.style.display = 'block';
+            iframe.src = link;
+            titleDisp.innerText = "أنت تشاهد الآن: عدنان ولينا - الحلقة " + (index + 1);
+            
+            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            setTimeout(() => {
+                unlockPage();
+            }, 500);
         };
         grid.appendChild(btn);
     });
-
-    function loadEpisode(num, url, btnElement) {
-        // تحديث الواجهة
-        player.style.display = 'block';
-        iframe.src = url;
-        titleDisp.innerText = "أنت تشاهد الآن: عدنان ولينا - الحلقة " + num;
-
-        // تمييز الزر النشط
-        document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
-        btnElement.classList.add('active');
-
-        // التمرير للأعلى لمشاهدة الفيديو
-        player.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    
+    iframe.addEventListener('load', function() {
+        try {
+            iframe.contentWindow.addEventListener('scroll', function(e) {
+                iframe.contentWindow.scrollTo(0, 0);
+            });
+        } catch(e) {
+            console.log("لا يمكن الوصول لـ iframe بسبب سياسة الأمان");
+        }
+    });
 </script>
 
 </body>
