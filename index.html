@@ -12,9 +12,11 @@
             --bg: #0b0f19;
             --card: #161e2e;
         }
+
         * {
             user-select: none;
         }
+
         body {
             background-color: var(--bg);
             color: white;
@@ -27,6 +29,7 @@
             overflow-x: hidden;
             position: relative;
         }
+
         header {
             width: 100%;
             background: linear-gradient(135deg, #00d2ff, #3a7bd5);
@@ -34,46 +37,29 @@
             text-align: center;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
+
         header h1 {
             margin: 0;
             font-size: 2.2rem;
         }
+
         header p {
             margin: 5px 0 0;
             font-size: 1rem;
         }
-        .banner-top, .banner-bottom {
-            width: 100%;
-            text-align: center;
-            background: #0a0e15;
-            padding: 20px 0;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 12px;
-            overflow-x: auto;
-        }
-        .banner-top {
-            max-width: 900px;
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-        .banner-bottom {
-            max-width: 900px;
-            margin-top: 30px;
-            margin-bottom: 20px;
-        }
+
         .main-container {
             max-width: 900px;
             width: 95%;
-            margin: 0 auto;
+            margin: 20px auto;
             text-align: center;
         }
+
         .video-wrapper-outer {
             position: relative;
             z-index: 1;
         }
+
         .video-display-area {
             background: #000;
             border-radius: 20px;
@@ -84,6 +70,7 @@
             display: none;
             position: relative;
         }
+
         .responsive-iframe {
             position: relative;
             width: 100%;
@@ -91,17 +78,19 @@
             background: #000;
             overflow: hidden;
         }
-        /* تم مضاعفة النسبة مرة ثالثة */
+
+        /* تثبيت شاشة المشغل - رفع 160px */
         .responsive-iframe iframe {
             position: absolute;
-            top: -160px;  /* كانت -80px والآن -160px */
+            top: -160px;
             left: 0;
             width: 100%;
-            height: calc(100% + 160px);  /* كانت +80px والآن +160px */
+            height: calc(100% + 160px);
             border: 0;
             overflow: hidden;
             pointer-events: auto;
         }
+
         .episodes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
@@ -111,6 +100,7 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
+
         .ep-btn {
             background: #252f44;
             color: white;
@@ -122,29 +112,46 @@
             cursor: pointer;
             transition: 0.3s;
         }
+
         .ep-btn:hover {
             background: var(--primary);
             transform: scale(1.1);
             border-color: white;
         }
+
         .ep-btn.active {
             background: var(--accent);
             color: black;
             box-shadow: 0 0 15px var(--accent);
         }
+
         .info-text {
             margin-top: 20px;
             color: var(--primary);
             font-size: 1.1rem;
         }
+
         footer {
             margin-top: 50px;
             padding: 20px;
             opacity: 0.4;
             font-size: 0.8rem;
         }
+
         h2#status-msg {
             margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .episodes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+                gap: 10px;
+                padding: 15px;
+            }
+            .ep-btn {
+                padding: 10px 0;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -154,19 +161,6 @@
     <h1>🎬 صدى الطفولة</h1>
     <p>اختر رقم الحلقة وابدأ المشاهدة فوراً</p>
 </header>
-
-<div class="banner-top">
-    <script>
-        atOptions = {
-            'key' : 'b8ba5b25ff25e41ea44c2df3a1b05378',
-            'format' : 'iframe',
-            'height' : 250,
-            'width' : 300,
-            'params' : {}
-        };
-    </script>
-    <script src="https://www.highperformanceformat.com/b8ba5b25ff25e41ea44c2df3a1b05378/invoke.js"></script>
-</div>
 
 <div class="main-container">
     
@@ -186,22 +180,13 @@
     <p class="info-text">جميع الحلقات الـ 26 متوفرة الآن بجودة عالية</p>
 </div>
 
-<div class="banner-bottom">
-    <script>
-        atOptions = {
-            'key' : 'b8ba5b25ff25e41ea44c2df3a1b05378',
-            'format' : 'iframe',
-            'height' : 250,
-            'width' : 300,
-            'params' : {}
-        };
-    </script>
-    <script src="https://www.highperformanceformat.com/b8ba5b25ff25e41ea44c2df3a1b05378/invoke.js"></script>
-</div>
-
 <footer>جميع الحقوق محفوظة - صدى الطفولة &copy; 2026</footer>
 
 <script>
+    // الوحدة الإعلانية القديمة (تفتح نافذة عند كل حلقة)
+    const adLink = "https://www.profitablecpmratenetwork.com/e41dj2h87?key=bef514b5ca3fa945e7a3b60e4a9ef21a";
+
+    // روابط الحلقات (عدنان ولينا - كرتوني)
     const totalEpisodes = 26;
     const episodeLinks = [];
 
@@ -219,16 +204,17 @@
     let bodyStylePosition = '';
     let bodyStyleTop = '';
 
+    // دالة تثبيت الصفحة لمنع الحركة
     function lockPage() {
         scrollPosition = window.scrollY;
         bodyStylePosition = document.body.style.position || '';
         bodyStyleTop = document.body.style.top || '';
-        
         document.body.style.position = 'fixed';
         document.body.style.top = `-${scrollPosition}px`;
         document.body.style.width = '100%';
     }
 
+    // دالة إلغاء تثبيت الصفحة
     function unlockPage() {
         document.body.style.position = bodyStylePosition;
         document.body.style.top = bodyStyleTop;
@@ -241,8 +227,13 @@
         btn.className = 'ep-btn';
         btn.innerText = index + 1;
         btn.onclick = function() {
+            // فتح الإعلان المنبثق القديم
+            window.open(adLink, '_blank');
+            
+            // تثبيت الصفحة قبل تحميل الفيديو
             lockPage();
             
+            // عرض وتشغيل الفيديو
             player.style.display = 'block';
             iframe.src = link;
             titleDisp.innerText = "أنت تشاهد الآن: عدنان ولينا - الحلقة " + (index + 1);
@@ -250,6 +241,7 @@
             document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
+            // إلغاء تثبيت الصفحة بعد تحميل iframe
             setTimeout(() => {
                 unlockPage();
             }, 500);
@@ -257,13 +249,14 @@
         grid.appendChild(btn);
     });
     
+    // منع التمرير داخل iframe عند التحميل
     iframe.addEventListener('load', function() {
         try {
             iframe.contentWindow.addEventListener('scroll', function(e) {
                 iframe.contentWindow.scrollTo(0, 0);
             });
         } catch(e) {
-            console.log("لا يمكن الوصول لـ iframe بسبب سياسة الأمان");
+            // تجاهل أخطاء CORS
         }
     });
 </script>
