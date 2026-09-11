@@ -21,8 +21,6 @@ jobs:
         run: |
           mkdir -p android-app/app/src/main/assets
           mkdir -p android-app/app/src/main/java/com/sada/app
-          mkdir -p android-app/app/src/main/res/layout
-          mkdir -p android-app/app/src/main/res/values
           mkdir -p android-app/app/src/main/res/mipmap-hdpi
 
           cp -r *.html android-app/app/src/main/assets/ 2>/dev/null || true
@@ -33,9 +31,7 @@ jobs:
               <uses-permission android:name="android.permission.INTERNET" />
               <application
                   android:allowBackup="true"
-                  android:icon="@mipmap/ic_launcher"
                   android:label="صدى الطفولة"
-                  android:roundIcon="@mipmap/ic_launcher"
                   android:supportsRtl="true"
                   android:theme="@style/Theme.AppCompat.Light.NoActionBar">
                   <activity
@@ -122,11 +118,15 @@ jobs:
           }
           EOF
 
-      - name: Build Debug APK with Gradle
+      - name: Install Gradle and Build APK
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.5'
+
+      - name: Run Gradle Build
         run: |
           cd android-app
-          gradle wrapper
-          ./gradlew assembleDebug
+          gradle assembleDebug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
