@@ -25,10 +25,8 @@ jobs:
           mkdir -p android-app/app/src/main/res/values
           mkdir -p android-app/app/src/main/res/mipmap-hdpi
 
-          # نسخ ملفات موقعك لتعمل داخل التطبيق كمجلد محلي أو استدعاؤها عبر WebView
           cp -r *.html android-app/app/src/main/assets/ 2>/dev/null || true
 
-          # إنشاء ملف AndroidManifest.xml أساسي للصلاحيات والإنترنت
           cat << 'EOF' > android-app/app/src/main/AndroidManifest.xml
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.sada.app">
@@ -52,7 +50,6 @@ jobs:
           </manifest>
           EOF
 
-          # إنشاء ملف MainActivity.java لعرض الموقع عبر WebView
           cat << 'EOF' > android-app/app/src/main/java/com/sada/app/MainActivity.java
           package com.sada.app;
           import android.app.Activity;
@@ -71,7 +68,6 @@ jobs:
                   webSettings.setJavaScriptEnabled(true);
                   webSettings.setDomStorageEnabled(true);
                   myWebView.setWebViewClient(new WebViewClient());
-                  // استبدل الرابط أدناه برابط موقعك على GitHub Pages أو اتركها لتحميل الملف المحلي
                   myWebView.loadUrl("https://husamalu637.github.io/Sada5/");
                   setContentView(myWebView);
               }
@@ -86,7 +82,6 @@ jobs:
           }
           EOF
 
-          # ملفات البناء الضرورية (Gradle)
           echo "include ':app'" > android-app/settings.gradle
           echo "rootProject.name='SadaApp'" >> android-app/settings.gradle
 
@@ -130,8 +125,6 @@ jobs:
       - name: Build Debug APK with Gradle
         run: |
           cd android-app
-          chmod +x gradlew || true
-          # في حال لم يكن gradlew موجوداً، نقوم بتوليده أو بناء المشروع عبر gradle مباشرة
           gradle wrapper
           ./gradlew assembleDebug
 
